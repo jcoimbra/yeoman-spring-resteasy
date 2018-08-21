@@ -37,6 +37,12 @@ module.exports = class extends Generator {
             message: 'The base path for all resources.',
             default: 'api',
             store: true
+        }, {
+            type: 'input',
+            name: 'basePkg',
+            message: 'The base package for all classes.',
+            default: 'org.yo',
+            store: true
         }]);
     }
 
@@ -53,17 +59,24 @@ module.exports = class extends Generator {
         );
         this.fs.copyTpl(
             this.templatePath('App.java'),
-            this.destinationPath(`src/main/java/com/example/demo/${this._camelCase(this.answers.name)}Application.java`),
-            {appClass: this._camelCase(this.answers.name)}
+            this.destinationPath(`src/main/java/${this._pkgToDir(this.answers.basePkg)}/${this._camelCase(this.answers.name)}Application.java`),
+            {
+                appClass: this._camelCase(this.answers.name),
+                basePkg: this.answers.basePkg
+            }
         );
         this.fs.copyTpl(
             this.templatePath('JaxrsApplication.java'),
-            this.destinationPath('src/main/java/com/example/demo/JaxrsApplication.java'),
-            {basePath: this.answers.basePath}
+            this.destinationPath(`src/main/java/${this._pkgToDir(this.answers.basePkg)}/JaxrsApplication.java`),
+            {
+                basePath: this.answers.basePath,
+                basePkg: this.answers.basePkg
+            }
         );
-        this.fs.copy(
+        this.fs.copyTpl(
             this.templatePath('Yo.java'),
-            this.destinationPath('src/main/java/com/example/demo/resource/Yo.java')
+            this.destinationPath(`src/main/java/${this._pkgToDir(this.answers.basePkg)}/resource/Yo.java`),
+            {basePkg: this.answers.basePkg}
         );
         this.fs.write(
             this.destinationPath('src/main/resources/application.properties'),
@@ -71,8 +84,11 @@ module.exports = class extends Generator {
         );
         this.fs.copyTpl(
             this.templatePath('AppTests.java'),
-            this.destinationPath(`src/test/java/com/example/demo/${this._camelCase(this.answers.name)}ApplicationTests.java`),
-            {appClass: this._camelCase(this.answers.name)}
+            this.destinationPath(`src/test/java/${this._pkgToDir(this.answers.basePkg)}/${this._camelCase(this.answers.name)}ApplicationTests.java`),
+            {
+                appClass: this._camelCase(this.answers.name),
+                basePkg: this.answers.basePkg
+            }
         );
         mkdirp.sync('src/main/resources/static');
         mkdirp.sync('src/main/resources/templates');
@@ -83,5 +99,9 @@ module.exports = class extends Generator {
             .replace(/^[^a-z]/g, '')
             .replace(/^[a-z]/g, letter => letter.toUpperCase())
             .replace(/[^a-z,^A-Z,^0-9]/g, '');
+    }
+
+    _pkgToDir(str) {
+        return str.replace('.', '/');
     }
 };

@@ -1,4 +1,4 @@
-package com.example.demo.resource;
+package <%= basePkg %>.resource;
 
 import org.springframework.stereotype.Component;
 
