@@ -5,9 +5,17 @@
   "files": [
     "generators"
   ],
+  "keywords": [
+    "yeoman-generator"
+  ],
   "author": "José Coimbra",
+  "homepage": "https://github.com/jcoimbra/yeoman-spring-resteasy",
   "license": "MIT",
   "dependencies": {
     "yeoman-generator": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcoimbra/yeoman-spring-resteasy"
   }
 }
